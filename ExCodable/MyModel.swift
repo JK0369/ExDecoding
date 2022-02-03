@@ -10,9 +10,12 @@ import Foundation
 struct MyModel {
   enum CodingKeys: String, CodingKey {
     case userID = "user_id"
-    case blogName = "blog_name"
+    case blogInfo = "blog_info"
   }
-  enum BlogNameKeys: String, CodingKey {
+  enum BlogInfoKeys: String, CodingKey {
+    case name
+  }
+  enum NameKeys: String, CodingKey {
     case first
     case second
   }
@@ -25,11 +28,8 @@ extension MyModel: Decodable {
     let codingKeys = try decoder.container(keyedBy: CodingKeys.self)
     self.userID = try codingKeys.decode(String.self, forKey: .userID)
     
-    let blogNameKeys = try codingKeys.nestedContainer(keyedBy: BlogNameKeys.self, forKey: .blogName)
-    self.blogName = try blogNameKeys.decode(String.self, forKey: .first)
+    let blogInfoKeys = try codingKeys.nestedContainer(keyedBy: BlogInfoKeys.self, forKey: .blogInfo)
+    let nameKeys = try blogInfoKeys.nestedContainer(keyedBy: NameKeys.self, forKey: .name)
+    self.blogName = try nameKeys.decode(String.self, forKey: .first)
   }
-}
-
-extension MyModel: Encodable {
-  
 }
